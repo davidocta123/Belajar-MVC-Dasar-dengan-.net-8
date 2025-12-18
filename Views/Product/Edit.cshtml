@@ -1,0 +1,94 @@
+@model ECommerceApp.Models.Product
+
+@{
+    ViewData["Title"] = "Edit Produk";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">Edit Produk</h5>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ImageUrl" />
+
+                    <!-- NAMA PRODUK -->
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <!-- HARGA -->
+                    <div class="mb-3">
+                        <label asp-for="Price" class="form-label fw-semibold"></label>
+                        <div class="input-group">
+                            <span class="input-group-text">Rp</span>
+                            <input asp-for="Price" class="form-control" />
+                        </div>
+                        <span asp-validation-for="Price" class="text-danger small"></span>
+                    </div>
+
+                    <!-- DESKRIPSI -->
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <!-- GAMBAR SAAT INI -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Gambar Saat Ini</label>
+                        <div>
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <img src="~/images/products/@Model.ImageUrl" class="img-thumbnail mb-2"
+                                    style="max-height:120px;" />
+                            }
+                            else
+                            {
+                                <p class="text-muted fst-italic">Belum ada gambar</p>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- UPLOAD GAMBAR BARU -->
+                    <div class="mb-3">
+                        <label asp-for="ImageFile" class="form-label fw-semibold">
+                            Ganti Gambar (Opsional)
+                        </label>
+                        <input asp-for="ImageFile" type="file" class="form-control" />
+                        <small class="text-muted">
+                            Kosongkan jika tidak ingin mengganti gambar
+                        </small>
+                    </div>
+
+                    <!-- BUTTON -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            ← Kembali
+                        </a>
+
+                        <button type="submit" class="btn btn-warning">
+                            💾 Simpan Perubahan
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

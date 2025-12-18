@@ -1,0 +1,112 @@
+@model List<ECommerceApp.Models.CartItem>
+
+@{
+    ViewData["Title"] = "Keranjang Belanja";
+    var culture = new System.Globalization.CultureInfo("id-ID");
+}
+
+<h2 class="fw-bold mb-4">🛒 Keranjang Belanja</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Keranjang masih kosong
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+
+            <table class="table align-middle mb-0" style="table-layout:fixed;">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th style="width:45%;">Produk</th>
+                        <th style="width:15%;">Harga</th>
+                        <th style="width:10%;">Qty</th>
+                        <th style="width:15%;">Total</th>
+                        <th style="width:15%;">Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <!-- PRODUK -->
+                            <td>
+                                <div class="d-flex gap-3 align-items-start">
+
+                                    <img src="~/images/products/@item.ImageUrl" class="rounded shadow-sm flex-shrink-0"
+                                        style="width:70px; height:70px; object-fit:cover;" />
+
+                                    <div style="min-width:0;">
+                                        <div class="fw-semibold text-truncate">
+                                            @item.ProductName
+                                        </div>
+
+                                        @if (!string.IsNullOrEmpty(item.Description))
+                                        {
+                                            <small class="text-muted d-block text-truncate">
+                                                @(item.Description.Length > 80
+                                                                                    ? item.Description.Substring(0, 80) + "..."
+                                                                                    : item.Description)
+                                            </small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted fst-italic">
+                                                Tidak ada deskripsi
+                                            </small>
+                                        }
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <!-- HARGA -->
+                            <td class="text-end">
+                                @item.Price.ToString("C", culture)
+                            </td>
+
+                            <!-- QTY -->
+                            <td class="text-center fw-semibold">
+                                @item.Quantity
+                            </td>
+
+                            <!-- TOTAL -->
+                            <td class="text-end fw-bold text-success">
+                                @item.SubTotal.ToString("C", culture)
+                            </td>
+
+                            <!-- AKSI -->
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a asp-action="Increase" asp-route-id="@item.ProductId" class="btn btn-sm btn-success">
+                                        +
+                                    </a>
+
+                                    <a asp-action="Decrease" asp-route-id="@item.ProductId"
+                                        class="btn btn-sm btn-danger @(item.Quantity <= 1 ? "disabled" : "")">
+                                        −
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <!-- TOTAL BELANJA -->
+    <div class="d-flex justify-content-end mt-3">
+        <h5 class="fw-bold">
+            Total:
+            <span class="text-success">
+                @Model.Sum(x => x.SubTotal).ToString("C", culture)
+            </span>
+        </h5>
+    </div>
+}

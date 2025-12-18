@@ -1,0 +1,76 @@
+@model ECommerceApp.Models.Product
+
+@{
+    ViewData["Title"] = "Tambah Product";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Tambah Product Baru</h5>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+                    <!-- NAMA PRODUK -->
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold"></label>
+                        <input asp-for="Name" class="form-control" placeholder="Contoh: Sepatu Running" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <!-- HARGA -->
+                    <div class="mb-3">
+                        <label asp-for="Price" class="form-label fw-semibold"></label>
+                        <div class="input-group">
+                            <span class="input-group-text">Rp</span>
+                            <input asp-for="Price" class="form-control" placeholder="100000" />
+                        </div>
+                        <span asp-validation-for="Price" class="text-danger small"></span>
+                    </div>
+
+                    <!-- DESKRIPSI -->
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"
+                            placeholder="Deskripsi singkat produk"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <!-- UPLOAD GAMBAR -->
+                    <div class="mb-3">
+                        <label asp-for="ImageFile" class="form-label fw-semibold">
+                            Gambar Produk
+                        </label>
+                        <input asp-for="ImageFile" type="file" class="form-control" />
+                        <small class="text-muted">
+                            Format JPG/PNG, maksimal 2MB
+                        </small>
+                    </div>
+
+                    <!-- BUTTON -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            ← Kembali
+                        </a>
+
+                        <button type="submit" class="btn btn-success">
+                            💾 Simpan Produk
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

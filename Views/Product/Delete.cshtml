@@ -1,0 +1,82 @@
+@model ECommerceApp.Models.Product
+
+@{
+    ViewData["Title"] = "Hapus Product";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Konfirmasi Hapus Product</h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="alert alert-warning">
+                    ⚠️ <strong>Perhatian!</strong>
+                    Produk ini akan dihapus secara permanen.
+                </div>
+
+                <div class="row g-4">
+                    <!-- GAMBAR -->
+                    <div class="col-md-4 text-center">
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src="~/images/products/@Model.ImageUrl" class="img-fluid rounded border"
+                                style="max-height:150px;" />
+                        }
+                        else
+                        {
+                            <div class="border rounded p-3 text-muted fst-italic">
+                                No Image
+                            </div>
+                        }
+                    </div>
+
+                    <!-- INFO -->
+                    <div class="col-md-8">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Nama</dt>
+                            <dd class="col-sm-8">@Model.Name</dd>
+
+                            <dt class="col-sm-4">Harga</dt>
+                            <dd class="col-sm-8">
+                                <span class="text-success fw-semibold">
+                                    @Model.Price.ToString("C")
+                                </span>
+                            </dd>
+
+                            <dt class="col-sm-4">Deskripsi</dt>
+                            <dd class="col-sm-8">
+                                @(string.IsNullOrEmpty(Model.Description)
+                                                                ? "Tidak ada deskripsi"
+                                                                : Model.Description)
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <hr />
+
+                <!-- FORM DELETE -->
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            Batal
+                        </a>
+
+                        <button type="submit" class="btn btn-danger">
+                            Ya, Hapus
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>

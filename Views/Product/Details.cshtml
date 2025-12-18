@@ -1,0 +1,70 @@
+@model ECommerceApp.Models.Product
+
+
+@{
+    ViewData["Title"] = "Detail Product";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-9">
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <div class="row g-4">
+                    <!-- GAMBAR PRODUK -->
+                    <div class="col-md-5 text-center">
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src="~/images/products/@Model.ImageUrl" class="img-fluid rounded border"
+                                style="max-height:350px;" />
+                        }
+                        else
+                        {
+                            <div class="border rounded p-5 text-muted fst-italic">
+                                Tidak ada gambar
+                            </div>
+                        }
+                    </div>
+
+                    <!-- INFO PRODUK -->
+                    <div class="col-md-7">
+                        <h3 class="fw-bold mb-2">@Model.Name</h3>
+
+                        <h4 class="text-success fw-semibold mb-3">
+                            @Model.Price.ToString("C")
+                        </h4>
+
+                        <hr />
+
+                        <h6 class="fw-semibold">Deskripsi Produk</h6>
+                        <p class="text-muted">
+                            @(string.IsNullOrEmpty(Model.Description)
+                                                        ? "Tidak ada deskripsi produk."
+                                                        : Model.Description)
+                        </p>
+
+                        <hr />
+
+                        <!-- ACTION BUTTON -->
+                        <div class="d-flex gap-2 mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                ← Kembali
+                            </a>
+
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                                Edit
+                            </a>
+
+                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                                Hapus
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
