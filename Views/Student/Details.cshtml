@@ -1,0 +1,45 @@
+@model BootcampMvp.Models.Student
+
+@{
+    ViewData["Title"] = "Detail Siswa";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Detail Siswa</h4>
+            </div>
+
+            <div class="card-body">
+                @if (ViewBag.Message != null)
+                {
+                    <div class="alert alert-info">
+                        @ViewBag.Message
+                    </div>
+                }
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 fw-semibold">Nama</dt>
+                    <dd class="col-sm-8">@Model.Name</dd>
+
+                    <dt class="col-sm-4 fw-semibold">Email</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+
+                    <dt class="col-sm-4 fw-semibold">Usia</dt>
+                    <dd class="col-sm-8">@Model.Age</dd>
+                </dl>
+            </div>
+
+            <div class="card-footer bg-light d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    ← Kembali
+                </a>
+
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                    ✏️ Edit
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

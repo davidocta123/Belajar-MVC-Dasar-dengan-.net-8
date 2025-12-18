@@ -1,0 +1,56 @@
+@model BootcampMvp.Models.Attendance
+
+@{
+    ViewData["Title"] = "Hapus Attedance";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Hapus Attedance</h4>
+            </div>
+
+            <div class="card-body">
+                <p class="text-danger fw-semibold">
+                    Apakah Anda yakin ingin menghapus data absensi berikut?
+                </p>
+
+                <table class="table table-bordered">
+                    <tr>
+                        <th style="width: 40%">Nama Siswa</th>
+                        <td>@Model.Student?.Name</td>
+                    </tr>
+                    <tr>
+                        <th>Tanggal</th>
+                        <td>@Model.Date.ToString("dd MMM yyyy")</td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>
+                            <span
+                                class="badge 
+                                @(Model.Status == "Hadir" ? "bg-success" :
+                                                                                                                                                                                                        Model.Status == "Izin" ? "bg-warning text-dark" :
+                                                                                                                                                                                                        "bg-danger")">
+                                @Model.Status
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+
+                <form asp-action="Delete" method="post" class="d-flex justify-content-between">
+                    <input type="hidden" asp-for="Id" />
+
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        ← Batal
+                    </a>
+
+                    <button type="submit" class="btn btn-danger">
+                        🗑️ Ya, Hapus
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

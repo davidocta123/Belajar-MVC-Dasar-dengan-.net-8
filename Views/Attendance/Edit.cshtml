@@ -1,0 +1,62 @@
+@model BootcampMvp.Models.Attendance
+
+@{
+    ViewData["Title"] = "Edit Attedance";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0">Edit Attedance</h4>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+
+                    <!-- Pilih Siswa -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Siswa</label>
+                        <select asp-for="StudentId" class="form-select" required>
+                            <option value="">-- Pilih Siswa --</option>
+                            @foreach (var s in ViewBag.Students)
+                            {
+                                <option value="@s.Id" selected="@(s.Id == Model.StudentId)">
+                                    @s.Name
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Tanggal -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tanggal</label>
+                        <input asp-for="Date" type="date" class="form-control" required />
+                    </div>
+
+                    <!-- Status -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Status</label>
+                        <select asp-for="Status" class="form-select" required>
+                            <option value="Hadir" selected="@(Model.Status == "Hadir")">Hadir</option>
+                            <option value="Izin" selected="@(Model.Status == "Izin")">Izin</option>
+                            <option value="Alpha" selected="@(Model.Status == "Alpha")">Alpha</option>
+                        </select>
+                    </div>
+
+                    <!-- Tombol -->
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            ← Batal
+                        </a>
+
+                        <button type="submit" class="btn btn-warning text-dark">
+                            💾 Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

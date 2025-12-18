@@ -1,0 +1,56 @@
+@model BootcampMvp.Models.Student
+
+@{
+    ViewData["Title"] = "Tambah Siswa Baru";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Tambah Siswa Baru</h4>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+
+                    <!-- Nama -->
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold"></label>
+                        <input asp-for="Name" class="form-control" placeholder="Masukkan nama lengkap" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold"></label>
+                        <input asp-for="Email" class="form-control" placeholder="contoh@email.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <!-- Usia -->
+                    <div class="mb-4">
+                        <label asp-for="Age" class="form-label fw-semibold"></label>
+                        <input asp-for="Age" class="form-control" placeholder="Usia siswa" />
+                        <span asp-validation-for="Age" class="text-danger"></span>
+                    </div>
+
+                    <!-- Tombol -->
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            ← Kembali
+                        </a>
+
+                        <button type="submit" class="btn btn-success">
+                            💾 Simpan Data
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

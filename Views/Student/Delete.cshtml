@@ -1,0 +1,46 @@
+@model BootcampMvp.Models.Student
+
+@{
+    ViewData["Title"] = "Hapus Siswa";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card border-danger shadow-sm">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Konfirmasi Hapus Siswa</h4>
+            </div>
+
+            <div class="card-body">
+                <p class="text-danger fw-semibold">
+                    Apakah Anda yakin ingin menghapus data siswa berikut?
+                </p>
+
+                <dl class="row mb-4">
+                    <dt class="col-sm-4">Nama</dt>
+                    <dd class="col-sm-8">@Model.Name</dd>
+
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+
+                    <dt class="col-sm-4">Usia</dt>
+                    <dd class="col-sm-8">@Model.Age</dd>
+                </dl>
+
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            ← Batal
+                        </a>
+
+                        <button type="submit" class="btn btn-danger">
+                            🗑️ Ya, Hapus
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
