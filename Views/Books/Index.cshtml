@@ -1,0 +1,36 @@
+@model List<TugasWepAppBook.Models.Book>
+
+@{
+    ViewData["Title"] = "Daftar Buku";
+}
+
+<h2>Daftar Buku</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Judul</th>
+            <th>Author</th>
+            <th>Tahun</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>@book.Author</td>
+                <td>@book.PublicationYear</td>
+                <td>
+                    <a asp-controller="Books"
+                       asp-action="Detail"
+                       asp-route-id="@book.Id"
+                       class="btn btn-primary btn-sm">
+                        Detail
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

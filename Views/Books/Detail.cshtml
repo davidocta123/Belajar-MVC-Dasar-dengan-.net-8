@@ -1,0 +1,24 @@
+@model TugasWepAppBook.Models.Book
+
+@{
+    ViewData["Title"] = "Detail Buku";
+}
+
+<h2>Detail Buku</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Judul</dt>
+    <dd class="col-sm-9">@Model.Title</dd>
+
+    <dt class="col-sm-3">Author</dt>
+    <dd class="col-sm-9">@Model.Author</dd>
+
+    <dt class="col-sm-3">Tahun Terbit</dt>
+    <dd class="col-sm-9">@Model.PublicationYear</dd>
+</dl>
+
+<a asp-controller="Books"
+   asp-action="Index"
+   class="btn btn-secondary">
+    Kembali
+</a>
