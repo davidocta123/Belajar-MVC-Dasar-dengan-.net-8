@@ -1,0 +1,39 @@
+@model BootcampMvp.Models.Course
+
+@{
+    ViewData["Title"] = "Edit Mata Kuliah";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label asp-for="CourseName" class="form-label"></label>
+                <input asp-for="CourseName" class="form-control" />
+                <span asp-validation-for="CourseName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="StudentId" class="form-label">Student</label>
+                <select asp-for="StudentId" class="form-select"
+                    asp-items="@(new SelectList(ViewBag.Students, "Id", "Name", Model.StudentId))">
+                    <option value="">-- Pilih Student --</option>
+                </select>
+                <span asp-validation-for="StudentId" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            <a asp-action="Index" class="btn btn-secondary">Batal</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

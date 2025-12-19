@@ -4,6 +4,7 @@ namespace BootcampMvp.Models
 {
     public class Attendance
     {
+        [Key]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Siswa wajib dipilih")]

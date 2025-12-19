@@ -5,45 +5,45 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BootcampMvp.Controllers
 {
-    public class AttendanceController : Controller
+    public class CourseController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        // Dependency Injection
-        public AttendanceController(ApplicationDbContext context)
+        public CourseController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         // =========================
-        // GET: Attendance
+        // GET: Course
         // =========================
         public async Task<IActionResult> Index()
         {
-            var attendances = await _context.Attendances
-                .Include(a => a.Student) // jika Attendance memiliki relasi dengan Student
-                .ToListAsync();
-            return View(attendances);
+            var courses = await _context.Courses.Include(c => c.Student).ToListAsync();
+            return View(courses);
         }
 
-        // =========================
-        // GET: Attendance/Details/{id}
-        // =========================
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var attendance = await _context.Attendances
-                .Include(a => a.Student)
-                .FirstOrDefaultAsync(a => a.Id == id);
+            var course = await _context.Courses
+                .Include(c => c.Student)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (attendance == null) return NotFound();
+            if (course == null)
+            {
+                return NotFound();
+            }
 
-            return View(attendance);
+            return View(course);
         }
 
         // =========================
-        // GET: Attendance/Create
+        // GET: Course/Create
         // =========================
         public async Task<IActionResult> Create()
         {
@@ -52,60 +52,60 @@ namespace BootcampMvp.Controllers
         }
 
         // =========================
-        // POST: Attendance/Create
+        // POST: Course/Create
         // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Attendance attendance)
+        public async Task<IActionResult> Create(Course course)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 ViewBag.Students = await _context.Students.ToListAsync();
-                return View(attendance);
+                return View(course);
             }
 
-            _context.Add(attendance);
+            _context.Courses.Add(course);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         // =========================
-        // GET: Attendance/Edit/{id}
+        // GET: Course/Edit/{id}
         // =========================
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
-            var attendance = await _context.Attendances.FindAsync(id);
-            if (attendance == null) return NotFound();
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null) return NotFound();
 
             ViewBag.Students = await _context.Students.ToListAsync();
-            return View(attendance);
+            return View(course);
         }
 
         // =========================
-        // POST: Attendance/Edit/{id}
+        // POST: Course/Edit/{id}
         // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Attendance attendance)
+        public async Task<IActionResult> Edit(int id, Course course)
         {
-            if (id != attendance.Id) return NotFound();
+            if (id != course.Id) return NotFound();
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 ViewBag.Students = await _context.Students.ToListAsync();
-                return View(attendance);
+                return View(course);
             }
 
             try
             {
-                _context.Update(attendance);
+                _context.Update(course);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AttendanceExists(attendance.Id))
+                if (!CourseExists(course.Id))
                     return NotFound();
                 else
                     throw;
@@ -115,42 +115,41 @@ namespace BootcampMvp.Controllers
         }
 
         // =========================
-        // GET: Attendance/Delete/{id}
+        // GET: Course/Delete/{id}
         // =========================
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
-            var attendance = await _context.Attendances
-                .Include(a => a.Student)
-                .FirstOrDefaultAsync(a => a.Id == id);
+            var course = await _context.Courses
+                .Include(c => c.Student)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (attendance == null) return NotFound();
+            if (course == null) return NotFound();
 
-            return View(attendance);
+            return View(course);
         }
 
         // =========================
-        // POST: Attendance/Delete/{id}
+        // POST: Course/Delete/{id}
         // =========================
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var attendance = await _context.Attendances.FindAsync(id);
-            if (attendance != null)
+            var course = await _context.Courses.FindAsync(id);
+            if (course != null)
             {
-                _context.Attendances.Remove(attendance);
+                _context.Courses.Remove(course);
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        // Helper method to check if an Attendance exists
-        private bool AttendanceExists(int id)
+        private bool CourseExists(int id)
         {
-            return _context.Attendances.Any(a => a.Id == id);
+            return _context.Courses.Any(c => c.Id == id);
         }
     }
 }
