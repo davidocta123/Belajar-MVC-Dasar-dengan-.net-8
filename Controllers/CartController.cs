@@ -1,88 +1,89 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ECommerceApp.Data;
 using ECommerceApp.Models;
-using ECommerceApp.Services;
-using ECommerceApp.Extensions;
 
 namespace ECommerceApp.Controllers
 {
     public class CartController : Controller
     {
-        private readonly IProductService _productService;
-        private const string CART_KEY = "CART";
+        private readonly ApplicationDbContext _context;
 
-        public CartController(IProductService productService)
+        public CartController(ApplicationDbContext context)
         {
-            _productService = productService;
+            _context = context;
         }
 
-        public IActionResult Index()
+        // GET: Cart
+        public async Task<IActionResult> Index(int userId = 1) // contoh user statis
         {
-            var cart = HttpContext.Session.GetObject<List<CartItem>>(CART_KEY)
-                       ?? new List<CartItem>();
-
+            var cart = await _context.CartItems
+                                     .Where(c => c.UserId == userId)
+                                     .ToListAsync();
             return View(cart);
         }
-
+        // POST: Add product to cart
         [HttpPost]
-        public IActionResult Add(int id)
+        public async Task<IActionResult> Add(int productId, int userId = 1)
         {
-            var product = _productService.GetById(id);
-            if (product == null) return NotFound();
-
-            var cart = HttpContext.Session.GetObject<List<CartItem>>(CART_KEY)
-                       ?? new List<CartItem>();
-
-            var item = cart.FirstOrDefault(x => x.ProductId == id);
+            var item = await _context.CartItems
+                                     .FirstOrDefaultAsync(c => c.ProductId == productId && c.UserId == userId);
 
             if (item == null)
             {
-                cart.Add(new CartItem
+                var product = await _context.Products.FindAsync(productId);
+                if (product == null) return NotFound();
+
+                var cartItem = new CartItem
                 {
                     ProductId = product.Id,
                     ProductName = product.Name,
                     Price = product.Price,
                     ImageUrl = product.ImageUrl,
                     Description = product.Description,
-                    Quantity = 1
-                });
+                    Quantity = 1,
+                    UserId = userId
+                };
+                _context.CartItems.Add(cartItem);
             }
             else
             {
                 item.Quantity++;
+                _context.CartItems.Update(item);
             }
 
-            HttpContext.Session.SetObject(CART_KEY, cart);
-            return RedirectToAction("Index", "Cart", new { area = "Customer" });
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
-
-        public IActionResult Increase(int id)
+        // Increase quantity
+        public async Task<IActionResult> Increase(int id, int userId = 1)
         {
-            var cart = HttpContext.Session.GetObject<List<CartItem>>(CART_KEY)
-                       ?? new List<CartItem>();
-
-            var item = cart.FirstOrDefault(c => c.ProductId == id);
+            var item = await _context.CartItems
+                                     .FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
             if (item != null)
+            {
                 item.Quantity++;
-
-            HttpContext.Session.SetObject(CART_KEY, cart);
-            return RedirectToAction("Index", "Cart", new { area = "Customer" });
+                _context.CartItems.Update(item);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index");
         }
-
-        public IActionResult Decrease(int id)
+        // Decrease quantity
+        public async Task<IActionResult> Decrease(int id, int userId = 1)
         {
-            var cart = HttpContext.Session.GetObject<List<CartItem>>(CART_KEY)
-                       ?? new List<CartItem>();
-
-            var item = cart.FirstOrDefault(c => c.ProductId == id);
+            var item = await _context.CartItems
+                                     .FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
             if (item != null)
             {
                 item.Quantity--;
                 if (item.Quantity <= 0)
-                    cart.Remove(item);
-            }
+                    _context.CartItems.Remove(item);
+                else
+                    _context.CartItems.Update(item);
 
-            HttpContext.Session.SetObject(CART_KEY, cart);
-            return RedirectToAction("Index", "Cart", new { area = "Customer" });
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index");
         }
     }
 }

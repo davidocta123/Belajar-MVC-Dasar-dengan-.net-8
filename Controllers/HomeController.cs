@@ -1,21 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
-using ECommerceApp.Services;
+using Microsoft.EntityFrameworkCore;
+using ECommerceApp.Models;
+using ECommerceApp.Data;
 
 namespace ECommerceApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IProductService _productService;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(IProductService productService)
+        public HomeController(ApplicationDbContext context)
         {
-            _productService = productService;
+            _context = context;
         }
-
-        public IActionResult Index()
+        // GET: Home/Index
+        public async Task<IActionResult> Index()
         {
-            var products = _productService.GetAll();
-            return View(products); // ✅ kirim data ke view
+            // Ambil semua produk dari database
+            var products = await _context.Products.ToListAsync();
+            return View(products); // kirim data ke view
         }
     }
 }

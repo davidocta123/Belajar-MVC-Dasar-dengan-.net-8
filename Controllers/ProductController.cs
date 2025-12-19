@@ -1,32 +1,35 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ECommerceApp.Models;
-using ECommerceApp.Services;
+using ECommerceApp.Data;
 
 namespace ECommerceApp.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly IProductService _productService;
+        private readonly ApplicationDbContext _context;
 
-        public ProductController(IProductService productService)
+        public ProductController(ApplicationDbContext context)
         {
-            _productService = productService;
+            _context = context;
         }
-
-        public IActionResult Index()
+        // GET: Product
+        public async Task<IActionResult> Index()
         {
-            return View(_productService.GetAll());
+            var products = await _context.Products.ToListAsync();
+            return View(products);
         }
-
+        // GET: Product/Create
         public IActionResult Create() => View();
-
+        // POST: Product/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Product product)
+        public async Task<IActionResult> Create(Product product)
         {
             if (!ModelState.IsValid)
                 return View(product);
 
+            // Upload gambar
             if (product.ImageFile != null)
             {
                 var fileName = Guid.NewGuid() + Path.GetExtension(product.ImageFile.FileName);
@@ -37,35 +40,37 @@ namespace ECommerceApp.Controllers
                 );
 
                 using var stream = new FileStream(path, FileMode.Create);
-                product.ImageFile.CopyTo(stream);
+                await product.ImageFile.CopyToAsync(stream);
                 product.ImageUrl = fileName;
             }
 
-            _productService.Add(product);
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-        public IActionResult Edit(int id)
+        // GET: Product/Edit/{id}
+        public async Task<IActionResult> Edit(int id)
         {
-            var product = _productService.GetById(id);
+            var product = await _context.Products.FindAsync(id);
             if (product == null) return NotFound();
             return View(product);
         }
-
+        // POST: Product/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Product product)
+        public async Task<IActionResult> Edit(Product product)
         {
             if (!ModelState.IsValid)
                 return View(product);
 
-            var existing = _productService.GetById(product.Id);
+            var existing = await _context.Products.FindAsync(product.Id);
             if (existing == null) return NotFound();
 
             existing.Name = product.Name;
             existing.Price = product.Price;
             existing.Description = product.Description;
 
+            // Upload gambar baru jika ada
             if (product.ImageFile != null)
             {
                 var fileName = Guid.NewGuid() + Path.GetExtension(product.ImageFile.FileName);
@@ -76,26 +81,34 @@ namespace ECommerceApp.Controllers
                 );
 
                 using var stream = new FileStream(path, FileMode.Create);
-                product.ImageFile.CopyTo(stream);
+                await product.ImageFile.CopyToAsync(stream);
                 existing.ImageUrl = fileName;
             }
 
-            _productService.Update(existing);
+            _context.Products.Update(existing);
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
-
-        public IActionResult Delete(int id)
+        // GET: Product/Delete/{id}
+        public async Task<IActionResult> Delete(int id)
         {
-            var product = _productService.GetById(id);
+            var product = await _context.Products.FindAsync(id);
             if (product == null) return NotFound();
             return View(product);
         }
-
+        // POST: Product/Delete/{id}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            _productService.Delete(id);
+            var product = await _context.Products.FindAsync(id);
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+                await _context.SaveChangesAsync();
+            }
+
             return RedirectToAction(nameof(Index));
         }
     }

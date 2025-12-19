@@ -6,6 +6,7 @@ namespace ECommerceApp.Models
 {
     public class Product
     {
+        [Key] // Primary Key
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Nama produk wajib diisi.")]
