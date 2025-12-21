@@ -1,6 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using BootcampMvp.Data;
-using BootcampMvp.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.OpenApi;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,13 +16,56 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+builder.Services.AddControllers(); // Menambahkan layanan controller
+builder.Services.AddEndpointsApiExplorer(); // Untuk Swagger
+builder.Services.AddSwaggerGen(); // Untuk Swagger
+builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+
+    // Mendukung URI Versioning DAN Query String Versioning
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
+        new QueryStringApiVersionReader("api-version"));
+});
+// Menambahkan layanan untuk menjelajahi versi API
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV"; // Format grup versi API
+    options.SubstituteApiVersionInUrl = true;
+    // Mendukung URI Versioning DAN Query String Versioning
+});
+
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson();
+
+// Add services to the container.
+builder.Services.AddControllers() // Untuk API saja
+    .AddNewtonsoftJson();
 
 // builder.Services.AddSingleton<IStudentService, StudentService>();
 // builder.Services.AddSingleton<IAttendanceService, AttendanceService>();
 
-var app = builder.Build();
+var app = builder.Build(); // Create the app
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger(); // Enable middleware to serve generated Swagger as a JSON endpoint.
+    app.UseSwaggerUI(options =>
+    {
+        var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+        foreach (var description in provider.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                description.GroupName.ToUpperInvariant());
+        }
+    });
+}
 
 // Migrasi database saat aplikasi dijalankan
 using (var scope = app.Services.CreateScope())
@@ -57,6 +104,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-
-
+app.UseHttpsRedirection(); // Redirect HTTP requests to HTTPS
+app.UseAuthorization(); // Enable authorization middleware
+app.MapControllers(); // Map controller routes
 app.Run();
