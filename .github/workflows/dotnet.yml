@@ -1,0 +1,32 @@
+name: Build and Test .NET 8 MVC App
+
+on:
+  push:
+    branches: [ TugasHari4MembangunWebApi ]
+  pull_request:
+    branches: [ TugasHari4MembangunWebApi ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 10
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore BootcampMvp.sln
+
+    - name: Build
+      run: dotnet build BootcampMvp.sln --configuration Release --no-restore
+
+    - name: Run tests
+      run: dotnet test BootcampMvp.sln --no-build --verbosity normal
+
+    - name: Publish
+      run: dotnet publish -c Release -o ./publish

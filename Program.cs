@@ -8,6 +8,17 @@ using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5188") // URL Blazor WASM
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 // Konfigurasi koneksi database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                         throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -67,6 +78,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+
+
 // Migrasi database saat aplikasi dijalankan
 using (var scope = app.Services.CreateScope())
 {
@@ -107,4 +120,5 @@ app.MapControllerRoute(
 app.UseHttpsRedirection(); // Redirect HTTP requests to HTTPS
 app.UseAuthorization(); // Enable authorization middleware
 app.MapControllers(); // Map controller routes
+app.UseCors(); // Enable CORS
 app.Run();
