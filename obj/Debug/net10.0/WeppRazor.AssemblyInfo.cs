@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WeppRazor")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ed09f086c805d6066130178d27acb48f85360067")]
 [assembly: System.Reflection.AssemblyProductAttribute("WeppRazor")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WeppRazor")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
